@@ -35,7 +35,7 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     include_package_data=True,
-    package_data={'': ['*.nc','cdsapirc']},
+    package_data={'': ['*.txt','*.csv']},
     keywords="weather meteorology instrumentation",
     packages=find_packages(exclude=["contrib", "docs", "tests", "notebooks"]),
     install_requires=["pyserial"],

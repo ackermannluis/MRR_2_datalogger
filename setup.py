@@ -16,12 +16,12 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="parsivel2_datalogger",
+    name="MRR_2_datalogger",
     version="1.0.0",
-    description="datalogger for parsivel 2 disdrometer",
+    description="datalogger for MRR 2 radar",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ackermannluis/parsivel2_datalogger",
+    url="https://github.com/ackermannluis/MRR_2_datalogger",
     author="Luis Ackermann",
     author_email="ackermann.luis@gmail.com",  # Optional
     # For a list of valid classifiers, see https://pypi.org/classifiers/
@@ -39,5 +39,5 @@ setup(
     keywords="weather meteorology instrumentation",
     packages=find_packages(exclude=["contrib", "docs", "tests", "notebooks"]),
     install_requires=["pyserial"],
-    project_urls={"Source": "https://github.com/ackermannluis/parsivel2_datalogger/",},
+    project_urls={"Source": "https://github.com/ackermannluis/MRR_2_datalogger/",},
 )

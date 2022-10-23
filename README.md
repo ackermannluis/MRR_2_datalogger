@@ -1,13 +1,13 @@
-# Parsivel 2 Disdrometer datalogger (parsivel2_datalogger)
+# Micro Rain Radar 2 (MRR-2) datalogger (MRR_2_datalogger)
 
-Provides a reliable and simple datalogger for the parsivel 2 disdrometer.
+Provides a reliable and simple datalogger for the MRR-2.
 
 ### Dependencies
 - pyserial
 
 
 ### Install
-`git clone git@github.com:ackermannluis/parsivel2_datalogger.git`
+`git clone git@github.com:ackermannluis/MRR_2_datalogger.git`
 
 To install in your home directory, use:
 
@@ -15,4 +15,4 @@ To install in your home directory, use:
 
 ### Use
 - just run on the terminal by navegating to the source folder and running:
-`python parsivel_datalogger_main.py`
+`python MRR_2_datalogger_main.py`

@@ -21,4 +21,5 @@ to the serial port
 
 ### Use
 - just run on the terminal by navegating to the source folder and running:
+
 `python MRR_2_datalogger_main.py`

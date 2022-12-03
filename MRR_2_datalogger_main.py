@@ -19,9 +19,32 @@ import serial
 import time
 import sys
 
-output_path = 'C:/_temp/MRR_DATA/MRR_'
-port_ = 'COM20'
+
+def list_files_recursive(path_, filter_str=None):
+    # create list of raw spectra files
+    file_list = []
+    # r=root, d=directories, f = files
+    if filter_str is None:
+        for r, d, f in os.walk(path_):
+            for file in f:
+                filename_ = os.path.join(r, file)
+                file_list.append(filename_.replace('\\','/'))
+    else:
+        for r, d, f in os.walk(path_):
+            for file in f:
+                if filter_str in file:
+                    filename_ = os.path.join(r, file)
+                    file_list.append(filename_.replace('\\', '/'))
+    return sorted(file_list)
+
+
+output_path = '/home/mrr/Data_MRR_1/MRR_'
+port_ = '/dev/ttyUSB0'
 height_resolution = '50'
+
+com_ports_list = list_files_recursive('/dev/', 'ttyUSB')
+error_encountered = False
+current_try_port_index = 0
 
 while True:
     try:
@@ -35,10 +58,9 @@ while True:
 
         # flush full telegram
         txt = 'SN'.encode()
-        counter_ = 0
+        time_reading_start = time.time()
         while interface.inWaiting().bit_length() > 0 or txt.decode()[-1] != '\x04':
-            counter_ += 1
-            if counter_ > 10000:
+            if time.time() > time_reading_start + 60:
                 raise ValueError('hang while reading telegram, restarting connection')
             ibuffer = interface.read()
             txt += ibuffer
@@ -53,6 +75,8 @@ while True:
             '40':b'40\x0323',
             '50':b'50\x0322',
             '100':b'100\x0316',
+            '150':b'150\x0313',
+            '200':b'200\x0315',
             '250':b'250\x0310',
             '300':b'300\x0314',
             '400':b'400\x0313',
@@ -65,10 +89,9 @@ while True:
 
         # flush full telegram
         txt = 'SN'.encode()
-        counter_ = 0
+        time_reading_start = time.time()
         while interface.inWaiting().bit_length() > 0 or txt.decode()[-1] != '\x04':
-            counter_ += 1
-            if counter_ > 10000:
+            if time.time() > time_reading_start + 60:
                 raise ValueError('hang while reading telegram, restarting connection')
             ibuffer = interface.read()
             txt += ibuffer
@@ -82,9 +105,9 @@ while True:
 
             # read full telegram
             txt = 'SN'.encode()
+            time_reading_start = time.time()
             while interface.inWaiting().bit_length() > 0 or txt.decode()[-1] != '\x04':
-                counter_ += 1
-                if counter_ > 10000:
+                if time.time() > time_reading_start + 60:
                     raise ValueError('hang while reading telegram, restarting connection')
                 ibuffer = interface.read()
                 txt += ibuffer
@@ -117,13 +140,23 @@ while True:
                 print('skipping time stamp as telegram was received incomplete')
 
             time.sleep(3)
+            error_encountered = False
 
-        # interface.close()
     except BaseException as error_msg:
+        if error_encountered:
+            com_ports_list = list_files_recursive('/dev/', 'ttyUSB')
+            if current_try_port_index >= len(com_ports_list) - 1:
+                current_try_port_index = 0
+            else:
+                current_try_port_index += 1
+            port_ = com_ports_list[current_try_port_index]
+
+        error_encountered = True
         line_number = sys.exc_info()[-1].tb_lineno
         print('error in line {0}, error message:\n{1}'.format(line_number, error_msg))
         try:
             print('trying to close the connection to open it again (reset it)')
+            time.sleep(5)
             interface.close()
             time.sleep(5)
             print('successfully closed!')

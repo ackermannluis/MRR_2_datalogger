@@ -144,12 +144,18 @@ while True:
 
     except BaseException as error_msg:
         if error_encountered:
-            com_ports_list = list_files_recursive('/dev/', 'ttyUSB')
-            if current_try_port_index >= len(com_ports_list) - 1:
-                current_try_port_index = 0
-            else:
-                current_try_port_index += 1
-            port_ = com_ports_list[current_try_port_index]
+            while True:
+                print('searching available ports')
+                com_ports_list = list_files_recursive('/dev/', 'ttyUSB')
+                if len(com_ports_list) > 0:
+                    if current_try_port_index >= len(com_ports_list) - 1:
+                        current_try_port_index = 0
+                    else:
+                        current_try_port_index += 1
+                    port_ = com_ports_list[current_try_port_index]
+                    break
+                else:
+                    time.sleep(3)
 
         error_encountered = True
         line_number = sys.exc_info()[-1].tb_lineno

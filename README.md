@@ -16,7 +16,8 @@ To install in your home directory, use:
 ### Linux
 you will need to run (on terminal) the following command to allow python access 
 to the serial port
-`sudo usermod -a -G tty YOUR_USER_NAME
+
+`sudo usermod -a -G tty YOUR_USER_NAME`
 
 ### Use
 - just run on the terminal by navegating to the source folder and running:

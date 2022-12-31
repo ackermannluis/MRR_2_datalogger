@@ -241,7 +241,7 @@ while True:
             if error_encountered:
                 while True:
                     log_status('searching available ports')
-                    com_ports_list = list_files_recursive('/dev/', 'ttyUSB')
+                    com_ports_list = list_available_serial_ports()
                     if len(com_ports_list) > 0:
                         if current_try_port_index >= len(com_ports_list) - 1:
                             current_try_port_index = 0

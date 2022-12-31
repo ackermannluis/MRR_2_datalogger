@@ -31,7 +31,7 @@ height_resolution = '150'
 output_path_base = '/media/pi/'
 
 # define file prefix
-file_prefix = 'MRR_W_'
+file_prefix = 'MRR_E_'
 
 # if enabled, the data will be also sent to the specified ftp on the start of a new day
 enable_ftp_export = False
@@ -39,6 +39,10 @@ ftp_hostname = ''
 ftp_username = ''
 ftp_password = ''
 ftp_path     = '/'
+
+# enable this to print status reports to terminal instead of the log file
+debug_ = False
+
 # ################################################  USER VARIABLES  #################################################
 
 
@@ -88,13 +92,16 @@ def list_files_recursive(path_, filter_str=None):
                     file_list.append(filename_.replace('\\', '/'))
     return sorted(file_list)
 def log_status(text_):
-    status_log_filename = output_path + 'status_log.txt'
-    if os.path.isfile(status_log_filename):
-        with open(status_log_filename, 'a') as file_:
-            file_.write(str(text_) + '\n')
+    if debug_:
+        print(text_)
     else:
-        with open(status_log_filename, 'w') as file_:
-            file_.write(str(text_) + '\n')
+        status_log_filename = output_path + 'status_log.txt'
+        if os.path.isfile(status_log_filename):
+            with open(status_log_filename, 'a') as file_:
+                file_.write(str(text_) + '\n')
+        else:
+            with open(status_log_filename, 'w') as file_:
+                file_.write(str(text_) + '\n')
 def list_available_serial_ports():
     """ Lists serial port names
 
@@ -170,7 +177,7 @@ while True:
         }
         set_height_resolution_command = b'\x02\x48\x53\x3d' + heights_meters_dict[height_resolution] + b'\x0a'
         interface.write(set_height_resolution_command)
-        log_status('height resolution set to', height_resolution, 'meters')
+        log_status('height resolution set to ' + height_resolution + ' meters')
 
         # flush full telegram
         txt = 'SN'.encode()
@@ -228,7 +235,7 @@ while True:
                                                       ftp_path, ftp_hostname, ftp_username, ftp_password])
                             ftp_thread.run()
 
-                log_status(time.strftime('%Y-%m-%d_%H:%M:%S', time_), 'logged MRR data to file')
+                log_status(time.strftime('%Y-%m-%d_%H:%M:%S', time_) + ' logged MRR data to file')
             else:
                 log_status('skipping time stamp as telegram was received incomplete')
 
